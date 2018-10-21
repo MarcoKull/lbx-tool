@@ -83,20 +83,20 @@ void add() {
     checkArg(4);
     LbxFile lbx(args[2]);
     lbx.add(fileRead(args[3]));
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void create() {
     checkArg(3);
     LbxFile lbx;
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void del() {
     checkArg(4);
     LbxFile lbx(args[2]);
     lbx.remove(str2uint16(args[3]));
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void files() {
@@ -120,14 +120,14 @@ void replace() {
     uint16_t i = str2uint16(args[4]);
     delete[] lbx[i].data;
     lbx[i] = fileRead(args[3]);
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void unknown0() {
     checkArg(4);
     LbxFile lbx(args[2]);
     lbx.unknown0() = str2uint16(args[3]);
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void unknown1() {
@@ -136,7 +136,7 @@ void unknown1() {
     LbxFile::Content c = fileRead(args[3]);
     delete[] lbx.unknown1().data;
     lbx.unknown1() = c;
-    lbx.save(args[2]);
+    lbx.save();
 }
 
 void extract() {
