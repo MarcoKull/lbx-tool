@@ -20,10 +20,11 @@ if (WITH_QT OR NOT DEFINED WITH_QT)
             src/gui/Window.cpp
         )
 
-        # install icon and desktop file on linux
+        # install mime type, icon and desktop file on linux
         if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-            install(FILES data/lbx-tool.desktop DESTINATION /usr/share/applications )
-            install(FILES data/lbx-tool.png DESTINATION /usr/share/pixmaps )
+            install(FILES data/lbx-tool.desktop DESTINATION /usr/share/applications)
+            install(FILES data/lbx-tool.png DESTINATION /usr/share/pixmaps)
+            install(FILES data/lbx-mime.xml DESTINATION /usr/share/mime/packages)
         endif()
 
     elseif(WITH_QT)
