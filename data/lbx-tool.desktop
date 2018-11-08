@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=LBX Tool
+GenericName=Lbx File Editor
+Comment=Extract and Edit Lbx Files
+Exec=lbx-tool
+Icon=lbx-tool
+Terminal=false
+Type=Application
+Categories=Games;
+MimeType=application/lbx;
+Keywords=Games;

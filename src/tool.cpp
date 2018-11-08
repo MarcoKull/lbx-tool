@@ -1,11 +1,14 @@
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
-#include <stdexcept>
-#include <string>
 
-#include "lbx.h"
+#ifdef WITH_QT
+#include "gui/Gui.h"
+#endif
+
+#include <lbx.h>
+
 char** args;
 int argsc;
 
@@ -232,6 +235,19 @@ int main(int argc, char** argv) {
     try {
         tool();
     } catch (std::exception& e) {
+
+#ifdef WITH_QT
+        if (argc < 3) {
+            // open gui window
+            if (argc == 2) {
+                LbxToolGui::show(argv[1]);
+            } else {
+                LbxToolGui::show();
+            }
+            return 0;
+        }
+#endif /* WITH_QT */
+
         std::cerr << "error: " << e.what() << "\n";
         return 1;
     }
