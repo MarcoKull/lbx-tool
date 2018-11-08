@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-    <mime-type type="video/smk">
-        <comment>Smacker Video</comment>
-        <magic priority="50">
-            <match value="SMK2" type="string" offset="0"/>
-        </magic>
-    </mime-type>
     <mime-type type="application/lbx">
         <comment>LBX Archive</comment>
         <magic priority="50">
