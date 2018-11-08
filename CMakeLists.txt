@@ -40,4 +40,4 @@ install(
     TARGETS lbx-tool
     RUNTIME DESTINATION bin
 )
-target_link_libraries(lbx-tool -llbx ${GUI_LINK})
+target_link_libraries(lbx-tool lbx ${GUI_LINK})
