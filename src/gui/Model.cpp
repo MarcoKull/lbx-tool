@@ -71,7 +71,6 @@ void LbxToolGui::Model::insert(uint16_t _index, char* _data, uint32_t _size, std
 }
 
 void LbxToolGui::Model::error(std::string _msg) {
-    _msg[0] = (char) std::toupper(_msg[0]);
     QMessageBox::critical(NULL, "error", QString::fromStdString("<b>Error:</b><br><br>" + _msg + "."));
 }
 

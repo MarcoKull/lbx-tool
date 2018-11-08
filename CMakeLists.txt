@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 project(lbx-tool)
 
 # compiler options
-add_definitions(-std=c++11 -pipe -pedantic -Wall -Wconversion -Werror)
+if (NOT MSVC)
+    add_definitions(-std=c++11 -pipe -pedantic -Wall -Wconversion -Werror)
+endif()
 
 # search qt
 if (WITH_QT OR NOT DEFINED WITH_QT)
