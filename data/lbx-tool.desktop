@@ -2,10 +2,10 @@
 Name=LBX Tool
 GenericName=Lbx File Editor
 Comment=Extract and Edit Lbx Files
-Exec=lbx-tool
+Exec=lbx-tool %f
 Icon=lbx-tool
 Terminal=false
 Type=Application
-Categories=Games;
+Categories=Utility;
 MimeType=application/lbx;
 Keywords=Games;
