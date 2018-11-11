@@ -50,7 +50,7 @@ QVariant LbxToolGui::Model::data(const QModelIndex& _index, int _role) const {
         case 0:
             return QString::fromStdString(desc.at((size_t)_index.row()));
         case 1:
-            return QString::number(lbx->at((uint16_t) _index.row()).size);
+            return QString::number(lbx->at((uint16_t) _index.row()).second);
         default:
             return QVariant();
     }

@@ -59,27 +59,27 @@ void checkArg(size_t ac) {
     }
 }
 
-LbxFile::Content fileRead(std::string path) {
+std::pair<char*, uint32_t> fileRead(std::string path) {
     std::ifstream file(path, std::ifstream::binary | std::ifstream::ate);
     if (!file.good()) {
         throw std::runtime_error("could not open '" + path + "'");
     }
 
-    LbxFile::Content c;
-    c.size = (uint32_t) file.tellg();
-    c.data = new char[c.size];
+    std::pair<char*, uint32_t> p;
+    p.second = (uint32_t) file.tellg();
+    p.first = new char[p.second];
     file.seekg(0, std::ifstream::beg);
-    file.read(c.data, c.size);
+    file.read(p.first, p.second);
 
-    return c;
+    return p;
 }
 
-void fileWrite(LbxFile::Content& content, std::string path) {
+void fileWrite(std::pair<char*, uint32_t>& content, std::string path) {
     std::ofstream o(path, std::ifstream::binary);
     if (!o.good()) {
         throw std::runtime_error("could not write to '" + path + "'");
     }
-    o.write(content.data, content.size);
+    o.write(content.first, content.second);
 }
 
 void add() {
@@ -113,7 +113,7 @@ void list() {
     LbxFile lbx(args[2]);
     std::cout << "File '" << args[2] << "' contains " << lbx.size() << " files:\n";
     for (uint16_t i = 0; i < lbx.size(); ++i) {
-        std::cout << std::setw(4) << i + 1 << " - " << lbx[i].size << " byte\n";
+        std::cout << std::setw(4) << i + 1 << " - " << lbx[i].second << " byte\n";
     }
 }
 
@@ -121,7 +121,7 @@ void replace() {
     checkArg(5);
     LbxFile lbx(args[2]);
     uint16_t i = str2uint16(args[4]);
-    delete[] lbx[i].data;
+    delete[] lbx[i].first;
     lbx[i] = fileRead(args[3]);
     lbx.save();
 }
@@ -136,9 +136,9 @@ void unknown0() {
 void unknown1() {
     checkArg(4);
     LbxFile lbx(args[2]);
-    LbxFile::Content c = fileRead(args[3]);
-    delete[] lbx.unknown1().data;
-    lbx.unknown1() = c;
+    std::pair<char*, uint32_t> p = fileRead(args[3]);
+    delete[] lbx.unknown1().first;
+    lbx.unknown1() = p;
     lbx.save();
 }
 
@@ -179,16 +179,16 @@ void print() {
         LBXTOOL_PRINT_SEP(4);
         LBXTOOL_PRINT_LINE(lbx.offset(i), "offset " << i);
     }
-    if (lbx.unknown1().size > 0) {
-        LBXTOOL_PRINT_SEP(lbx.unknown1().size);
-        LBXTOOL_PRINT_LINE("?", "unknown area of " << lbx.unknown1().size << " byte");
+    if (lbx.unknown1().second > 0) {
+        LBXTOOL_PRINT_SEP(lbx.unknown1().second);
+        LBXTOOL_PRINT_LINE("?", "unknown area of " << lbx.unknown1().second << " byte");
     }
 
     for (uint16_t i = 0; i < lbx.size(); ++i) {
-        LBXTOOL_PRINT_SEP(lbx[i].size);
+        LBXTOOL_PRINT_SEP(lbx[i].second);
         std::stringstream s;
         s << "data[" << i << "]";
-        LBXTOOL_PRINT_LINE(s.str(), "file data of " << lbx[i].size << " byte");
+        LBXTOOL_PRINT_LINE(s.str(), "file data of " << lbx[i].second << " byte");
     }
     LBXTOOL_PRINT_SEP(0) // print last seperator
 }

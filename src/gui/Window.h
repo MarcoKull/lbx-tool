@@ -24,8 +24,8 @@ namespace LbxToolGui {
         void exec(Command* cmd);
         void onDo();
         void onSelect();
-        bool save(std::string path, LbxFile::Content* content);
-        LbxFile::Content read(std::string path);
+        bool save(std::string path, std::pair<char*, uint32_t>* content);
+        std::pair<char*, uint32_t> read(std::string path);
         bool hasSelection();
         char* copy(char* data, uint32_t size);
         uint16_t selection();

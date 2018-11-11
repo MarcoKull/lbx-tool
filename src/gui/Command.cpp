@@ -17,18 +17,18 @@ LbxToolGui::CommandDeleteInsert::CommandDeleteInsert(Model* _model, uint16_t _in
 }
 
 LbxToolGui::CommandDeleteInsert::~CommandDeleteInsert() {
-    delete[] content.data;
+    delete[] content.first;
 }
 
 void LbxToolGui::CommandDeleteInsert::doInsert() {
-    model->insert(index, content.data, content.size, desc);
-    content.data = NULL;
+    model->insert(index, content.first, content.second, desc);
+    content.first = NULL;
 }
 
 void LbxToolGui::CommandDeleteInsert::doDelete() {
     desc = model->desc[index];
     content = model->lbx->at(index);
-    model->lbx->at(index).data = NULL;
+    model->lbx->at(index).first = NULL;
     model->remove(index);
 }
 
@@ -55,8 +55,8 @@ std::string LbxToolGui::CommandDelete::toString() {
 // insert
 
 LbxToolGui::CommandInsert::CommandInsert(Model* _model, uint16_t _index, char* _data, uint32_t _size, std::string _desc) : CommandDeleteInsert(_model, _index) {
-    content.data = _data;
-    content.size = _size;
+    content.first = _data;
+    content.second = _size;
     desc = _desc;
 }
 
@@ -112,10 +112,10 @@ LbxToolGui::CommandUnknown1::~CommandUnknown1() {
 }
 
 void LbxToolGui::CommandUnknown1::exec() {
-    char* d = model->lbx->unknown1().data;
-    uint32_t s = model->lbx->unknown1().size;
-    model->lbx->unknown1().data = data;
-    model->lbx->unknown1().size = size;
+    char* d = model->lbx->unknown1().first;
+    uint32_t s = model->lbx->unknown1().second;
+    model->lbx->unknown1().first = data;
+    model->lbx->unknown1().second = size;
     data = d;
     size = s;
 }

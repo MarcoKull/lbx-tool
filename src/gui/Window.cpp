@@ -241,32 +241,32 @@ char* LbxToolGui::Window::copy(char* _data, uint32_t _size) {
     return d;
 }
 
-bool LbxToolGui::Window::save(std::string _path, LbxFile::Content* _content) {
+bool LbxToolGui::Window::save(std::string _path, std::pair<char*, uint32_t>* _content) {
     std::ofstream o(_path);
     if (!o.good()) {
         Model::error("could not open '" + _path + "'.");
         return false;
     }
-    o.write(_content->data, _content->size);
+    o.write(_content->first, _content->second);
     return true;
 }
 
-LbxFile::Content LbxToolGui::Window::read(std::string _path) {
-    LbxFile::Content c;
-    c.data = NULL;
-    c.size = 0;
+std::pair<char*, uint32_t> LbxToolGui::Window::read(std::string _path) {
+    std::pair<char*, uint32_t> p;
+    p.first = NULL;
+    p.second = 0;
 
     std::ifstream f(_path, std::ifstream::ate);
     if (!f.good()) {
         Model::error("could not open '" + _path + "'.");
-        return c;
+        return p;
     }
 
-    c.size = (uint32_t) f.tellg();
+    p.second = (uint32_t) f.tellg();
     f.seekg(0, std::ifstream::beg);
-    c.data = new char[c.size];
-    f.read(c.data, c.size);
-    return c;
+    p.first = new char[p.second];
+    f.read(p.first, p.second);
+    return p;
 }
 
 void LbxToolGui::Window::onActivated(const QModelIndex& /* _index */) {
@@ -292,8 +292,8 @@ void LbxToolGui::Window::onAbout() {
 void LbxToolGui::Window::onCopy() {
     uint16_t s = selection();
     delete[] copyData;
-    copySize = model.lbx->at(s).size;
-    copyData = copy(model.lbx->at(s).data, copySize);
+    copySize = model.lbx->at(s).second;
+    copyData = copy(model.lbx->at(s).first, copySize);
     copyDesc = model.desc[s] + " (copy)";
     actPaste.setEnabled(true);
     actPaste.setText(QString::fromStdString("&Paste '" + model.desc[s] + "'"));
@@ -338,14 +338,14 @@ void LbxToolGui::Window::onInsert() {
             "All Files(*.*)").toStdString();
 
     if (path.size() > 0) {
-        LbxFile::Content c = read(path);
-        if (c.data != NULL) {
+        std::pair<char*, uint32_t> p = read(path);
+        if (p.first != NULL) {
             uint16_t sel = model.lbx->size();
             if (hasSelection()) {
                 sel = selection();
             }
 
-            exec(new CommandInsert(&model, sel, c.data, c.size, QFileInfo(QString::fromStdString(path)).fileName().toStdString()));
+            exec(new CommandInsert(&model, sel, p.first, p.second, QFileInfo(QString::fromStdString(path)).fileName().toStdString()));
         }
     }
 }
@@ -429,9 +429,9 @@ void LbxToolGui::Window::onUnknown1Open() {
             "All Files(*.*)").toStdString();
 
     if (path.size() > 0) {
-        LbxFile::Content c = read(path);
-        if (c.data != NULL) {
-            exec(new CommandUnknown1(&model, c.data, c.size));
+        std::pair<char*, uint32_t> p = read(path);
+        if (p.first != NULL) {
+            exec(new CommandUnknown1(&model, p.first, p.second));
         }
     }
 }

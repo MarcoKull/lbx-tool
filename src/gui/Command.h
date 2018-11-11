@@ -27,7 +27,7 @@ namespace LbxToolGui {
         void doDelete();
         void doInsert();
         uint16_t index;
-        LbxFile::Content content;
+        std::pair<char*, uint32_t> content;
         std::string desc;
     };
 
