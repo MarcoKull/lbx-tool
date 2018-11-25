@@ -33,7 +33,7 @@ namespace LbxToolGui {
     }
 
     static int show(char* path) {
-        return show(0, NULL);
+        return show(1, &path);
     }
 
     static int show() {
