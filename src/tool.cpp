@@ -240,11 +240,10 @@ int main(int argc, char** argv) {
         if (argc < 3) {
             // open gui window
             if (argc == 2) {
-                LbxToolGui::show(argv[1]);
+                return LbxToolGui::show(argv[1]);
             } else {
-                LbxToolGui::show();
+                return LbxToolGui::show();
             }
-            return 0;
         }
 #endif /* WITH_QT */
 

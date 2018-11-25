@@ -7,7 +7,7 @@
 
 namespace LbxToolGui {
 
-    static void show(std::string path) {
+    static int show(std::string path) {
         // initialize qt application
         int argc = 0;
         QApplication app(argc, NULL);
@@ -22,11 +22,11 @@ namespace LbxToolGui {
         }
 
         // show window
-        app.exec();
+        return app.exec();
     }
 
-    static void show() {
-        show("");
+    static int show() {
+        return show("");
     }
 
 }
