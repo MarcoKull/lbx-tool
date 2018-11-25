@@ -13,6 +13,10 @@ if (WITH_QT OR NOT DEFINED WITH_QT)
         add_definitions(-DWITH_QT)
         set(CMAKE_AUTOMOC TRUE)
         set(CMAKE_AUTORCC TRUE)
+        
+        if(MSVC)
+            set(GUI_TYPE WIN32 resources/lbx-tool.rc)
+        endif()
 
         # set gui source files and link targets
         set(GUI_LINK Qt5::Core Qt5::Widgets)
@@ -36,7 +40,7 @@ if (WITH_QT OR NOT DEFINED WITH_QT)
 endif()
 
 # lbx-tool
-add_executable(lbx-tool src/tool.cpp ${GUI_SOURCES})
+add_executable(lbx-tool ${GUI_TYPE} src/tool.cpp ${GUI_SOURCES})
 install(
     TARGETS lbx-tool
     RUNTIME DESTINATION bin

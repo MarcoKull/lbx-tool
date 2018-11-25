@@ -254,3 +254,10 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+#ifdef WIN32
+#include <windows.h>
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
+    return main(__argc, __argv);
+}
+#endif /* WIN32 */
