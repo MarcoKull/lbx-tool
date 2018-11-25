@@ -13,12 +13,14 @@
 #include <QTableView>
 #include <iostream>
 
-LbxToolGui::Window::Window() : model(this) {
+using namespace LbxToolGui;
+
+Window::Window() : model(this) {
     copyData = NULL;
     cmdCurrent = 0;
     cmdSaved = 0;
     resize(450, 300);
-    
+
     // set icon
     setWindowIcon(QIcon(":lbx-tool.png"));
 
@@ -150,7 +152,7 @@ LbxToolGui::Window::Window() : model(this) {
     onSelect();
 }
 
-bool LbxToolGui::Window::open(std::string _path) {
+bool Window::open(std::string _path) {
     bool ret = model.open(_path);
     cmdCurrent = 0;
     cmdSaved = 0;
@@ -163,7 +165,13 @@ bool LbxToolGui::Window::open(std::string _path) {
     return ret;
 }
 
-void LbxToolGui::Window::exec(Command* _cmd) {
+bool Window::openNew(std::string _path) {
+    Window* w = new Window();
+    w->show();
+    return w->open(_path);
+}
+
+void Window::exec(Command* _cmd) {
     // delete commands after the current one
     while (cmdCurrent != cmd.size()) {
         delete cmd[cmd.size() - 1];
@@ -179,7 +187,7 @@ void LbxToolGui::Window::exec(Command* _cmd) {
     onDo();
 }
 
-void LbxToolGui::Window::onDo() {
+void Window::onDo() {
     actUndo.setEnabled(cmdCurrent > 0);
     actRedo.setEnabled(cmdCurrent < cmd.size());
     actSave.setEnabled(cmdCurrent != cmdSaved);
@@ -216,7 +224,7 @@ void LbxToolGui::Window::onDo() {
     statusFiles.setText(QString("%1 Files").arg(model.lbx->size()));
 }
 
-void LbxToolGui::Window::onContextMenu(const QPoint& _pos) {
+void Window::onContextMenu(const QPoint& _pos) {
     QMenu menu(this);
     menu.addAction(&actCopy);
     menu.addAction(&actPaste);
@@ -228,7 +236,7 @@ void LbxToolGui::Window::onContextMenu(const QPoint& _pos) {
     menu.exec(mapToGlobal(_pos), 0);
 }
 
-void LbxToolGui::Window::onSelect() {
+void Window::onSelect() {
     bool s = hasSelection();
     actCopy.setEnabled(s);
     actCut.setEnabled(s);
@@ -236,7 +244,7 @@ void LbxToolGui::Window::onSelect() {
     actExtract.setEnabled(s);
 }
 
-char* LbxToolGui::Window::copy(char* _data, uint32_t _size) {
+char* Window::copy(char* _data, uint32_t _size) {
     char* d = new char[_size];
     for (size_t i = 0; i < _size; ++i) {
         d[i] = _data[i];
@@ -244,7 +252,7 @@ char* LbxToolGui::Window::copy(char* _data, uint32_t _size) {
     return d;
 }
 
-bool LbxToolGui::Window::save(std::string _path, std::pair<char*, uint32_t>* _content) {
+bool Window::save(std::string _path, std::pair<char*, uint32_t>* _content) {
     std::ofstream o(_path);
     if (!o.good()) {
         Model::error("could not open '" + _path + "'.");
@@ -254,7 +262,7 @@ bool LbxToolGui::Window::save(std::string _path, std::pair<char*, uint32_t>* _co
     return true;
 }
 
-std::pair<char*, uint32_t> LbxToolGui::Window::read(std::string _path) {
+std::pair<char*, uint32_t> Window::read(std::string _path) {
     std::pair<char*, uint32_t> p;
     p.first = NULL;
     p.second = 0;
@@ -272,27 +280,27 @@ std::pair<char*, uint32_t> LbxToolGui::Window::read(std::string _path) {
     return p;
 }
 
-void LbxToolGui::Window::onActivated(const QModelIndex& /* _index */) {
+void Window::onActivated(const QModelIndex& /* _index */) {
     onExtract();
 }
 
-void LbxToolGui::Window::onSelectionChanged(const QItemSelection& /* _selected */, const QItemSelection& /* _deselected */) {
+void Window::onSelectionChanged(const QItemSelection& /* _selected */, const QItemSelection& /* _deselected */) {
     onSelect();
 }
 
-bool LbxToolGui::Window::hasSelection() {
+bool Window::hasSelection() {
     return sel->selection().size() == 1;
 }
 
-uint16_t LbxToolGui::Window::selection() {
+uint16_t Window::selection() {
     return (uint16_t) sel->selection()[0].indexes().at(0).row();
 }
 
-void LbxToolGui::Window::onAbout() {
+void Window::onAbout() {
     QMessageBox::about(this, "about lbx-tool", "This is free software licensed under the GNU General Public License version 3.<br>For more information visit <a href=\"https://github.com/MarcoKull/lbx-tool\">the project's github page</a>.");
 }
 
-void LbxToolGui::Window::onCopy() {
+void Window::onCopy() {
     uint16_t s = selection();
     delete[] copyData;
     copySize = model.lbx->at(s).second;
@@ -302,16 +310,16 @@ void LbxToolGui::Window::onCopy() {
     actPaste.setText(QString::fromStdString("&Paste '" + model.desc[s] + "'"));
 }
 
-void LbxToolGui::Window::onCut() {
+void Window::onCut() {
     onCopy();
     onDelete();
 }
 
-void LbxToolGui::Window::onDelete() {
+void Window::onDelete() {
     exec(new CommandDelete(&model, selection()));
 }
 
-void LbxToolGui::Window::onExtract() {
+void Window::onExtract() {
     std::string path = QFileDialog::getSaveFileName(
             this,
             "Save File",
@@ -323,7 +331,7 @@ void LbxToolGui::Window::onExtract() {
     }
 }
 
-void LbxToolGui::Window::onExtractAll() {
+void Window::onExtractAll() {
     std::string path = QString(QFileDialog::getExistingDirectory(this, "Select Target Directory", QDir::currentPath()) + QDir::separator()).toStdString();
     if (path.size() > 0) {
         for (uint16_t i = 0; i < model.lbx->size(); ++i) {
@@ -333,7 +341,7 @@ void LbxToolGui::Window::onExtractAll() {
 
 }
 
-void LbxToolGui::Window::onInsert() {
+void Window::onInsert() {
     std::string path = QFileDialog::getOpenFileName(
             this,
             "Open File",
@@ -353,12 +361,12 @@ void LbxToolGui::Window::onInsert() {
     }
 }
 
-void LbxToolGui::Window::onNew() {
+void Window::onNew() {
     Window* w = new Window();
     w->show();
 }
 
-void LbxToolGui::Window::onOpen() {
+void Window::onOpen() {
     std::string path = QFileDialog::getOpenFileName(
             this,
             "Open LBX File",
@@ -370,7 +378,7 @@ void LbxToolGui::Window::onOpen() {
     }
 }
 
-void LbxToolGui::Window::onPaste() {
+void Window::onPaste() {
     uint16_t i;
     if (hasSelection()) {
         i = selection();
@@ -380,23 +388,23 @@ void LbxToolGui::Window::onPaste() {
     exec(new CommandInsert(&model, i, copy(copyData, copySize), copySize, copyDesc));
 }
 
-void LbxToolGui::Window::onQuit() {
+void Window::onQuit() {
     close();
 }
 
-void LbxToolGui::Window::onRedo() {
+void Window::onRedo() {
     cmd[cmdCurrent++]->exec();
     onDo();
 }
 
-void LbxToolGui::Window::onSave() {
+void Window::onSave() {
     if (model.save()) {
         cmdSaved = cmdCurrent;
         onDo();
     }
 }
 
-void LbxToolGui::Window::onSaveAs() {
+void Window::onSaveAs() {
     std::string path = QFileDialog::getSaveFileName(
             this,
             "Save LBX File",
@@ -411,12 +419,12 @@ void LbxToolGui::Window::onSaveAs() {
     }
 }
 
-void LbxToolGui::Window::onUndo() {
+void Window::onUndo() {
     cmd[--cmdCurrent]->undo();
     onDo();
 }
 
-void LbxToolGui::Window::onUnknown0() {
+void Window::onUnknown0() {
     bool ok;
     int u0 = QInputDialog::getInt(this, "Unknown0", "A value with the size of two byte.<br>Most of the time it is zero, but its meaning is unknown.", model.lbx->unknown0(), 0, UINT16_MAX, 1, &ok);
     if (ok) {
@@ -424,7 +432,7 @@ void LbxToolGui::Window::onUnknown0() {
     }
 }
 
-void LbxToolGui::Window::onUnknown1Open() {
+void Window::onUnknown1Open() {
     std::string path = QFileDialog::getOpenFileName(
             this,
             "Open File",
@@ -439,7 +447,7 @@ void LbxToolGui::Window::onUnknown1Open() {
     }
 }
 
-void LbxToolGui::Window::onUnknown1Save() {
+void Window::onUnknown1Save() {
     std::string path = QFileDialog::getSaveFileName(
             this,
             "Save File",

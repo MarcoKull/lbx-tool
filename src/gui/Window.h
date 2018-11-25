@@ -19,6 +19,7 @@ namespace LbxToolGui {
     public:
         Window();
         bool open(std::string path);
+        bool openNew(std::string path);
 
     private:
         void exec(Command* cmd);

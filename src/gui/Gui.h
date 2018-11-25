@@ -7,26 +7,37 @@
 
 namespace LbxToolGui {
 
-    static int show(std::string path) {
+    static int show(int argc, char** argv) {
         // initialize qt application
-        int argc = 0;
-        QApplication app(argc, NULL);
+        int ac = 0;
+        QApplication app(ac, NULL);
 
         // create main window
         Window win;
         win.show();
 
-        // open given path
-        if (path.size() > 0) {
-            win.open(path);
+        // open file paths
+        if (argc > 0) {
+            if (win.open(argv[0])) {
+                for (int i = 1; i < argc; ++i) {
+                    if (!win.openNew(argv[i])) {
+                        break;
+                    }
+                }
+            }
         }
 
         // show window
         return app.exec();
+        return 0;
+    }
+
+    static int show(char* path) {
+        return show(0, NULL);
     }
 
     static int show() {
-        return show("");
+        return show(0, NULL);
     }
 
 }

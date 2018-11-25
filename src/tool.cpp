@@ -228,30 +228,40 @@ void tool() {
     }
 }
 
-int main(int argc, char** argv) {
+int cli(int argc, char** argv) {
     args = argv;
     argsc = argc;
 
     try {
         tool();
     } catch (std::exception& e) {
-
-#ifdef WITH_QT
-        if (argc < 3) {
-            // open gui window
-            if (argc == 2) {
-                return LbxToolGui::show(argv[1]);
-            } else {
-                return LbxToolGui::show();
-            }
-        }
-#endif /* WITH_QT */
-
         std::cerr << "error: " << e.what() << "\n";
         return 1;
     }
 
     return 0;
+}
+
+int main(int argc, char** argv) {
+#ifdef WITH_QT
+
+#ifdef WIN32
+    return LbxToolGui::show(argc - 1, argv + 1);
+#else
+    if (argc == 1) {
+        return LbxToolGui::show();
+    } else if (argc > 1 && argv[1][0] != '-') {
+        if (argc == 2) {
+            return LbxToolGui::show(argv[1]);
+        } else {
+            return LbxToolGui::show(argc - 1, argv + 1);
+        }
+    }
+#endif
+
+#endif /* WITH_QT */
+
+    return cli(argc, argv);
 }
 
 #ifdef WIN32
