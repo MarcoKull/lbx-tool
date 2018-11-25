@@ -18,6 +18,9 @@ LbxToolGui::Window::Window() : model(this) {
     cmdCurrent = 0;
     cmdSaved = 0;
     resize(450, 300);
+    
+    // set icon
+    setWindowIcon(QIcon(":lbx-tool.png"));
 
     // create status bar
     statusBar()->addPermanentWidget(&statusPath, 1);
