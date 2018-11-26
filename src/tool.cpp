@@ -245,9 +245,6 @@ int cli(int argc, char** argv) {
 int main(int argc, char** argv) {
 #ifdef WITH_QT
 
-#ifdef WIN32
-    return LbxToolGui::show(argc - 1, argv + 1);
-#else
     if (argc == 1) {
         return LbxToolGui::show();
     } else if (argc > 1 && argv[1][0] != '-') {
@@ -257,7 +254,6 @@ int main(int argc, char** argv) {
             return LbxToolGui::show(argc - 1, argv + 1);
         }
     }
-#endif
 
 #endif /* WITH_QT */
 
