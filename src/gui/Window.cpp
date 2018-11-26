@@ -172,10 +172,22 @@ bool Window::open(std::string _path) {
     return ret;
 }
 
-bool Window::openNew(std::string _path) {
+Window* Window::newWindow() {
+    // create new window
     Window* w = new Window();
+    
+    // pass preferences
+    w->actViewOffsets.setChecked(model.getIsViewOffsets());
+    w->onViewOffsets();
+    
+    // show and return
     w->show();
-    return w->open(_path);
+    return w;
+}
+
+
+bool Window::openNew(std::string _path) {
+    return newWindow()->open(_path);
 }
 
 void Window::exec(Command* _cmd) {
@@ -369,8 +381,7 @@ void Window::onInsert() {
 }
 
 void Window::onNew() {
-    Window* w = new Window();
-    w->show();
+    newWindow();
 }
 
 void Window::onOpen() {
