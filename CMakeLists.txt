@@ -3,7 +3,7 @@ project(lbx-tool)
 
 # compiler options
 if (NOT MSVC)
-    add_definitions(-std=c++11 -pipe -pedantic -Wall -Wconversion -Werror)
+    add_definitions(-std=c++11 -pipe -pedantic -Wall -Wconversion)
 endif()
 
 # search qt
@@ -15,7 +15,12 @@ if (WITH_QT OR NOT DEFINED WITH_QT)
         set(CMAKE_AUTORCC TRUE)
         
         if(MSVC)
-            set(GUI_TYPE WIN32 resources/lbx-tool.rc)
+            set(GUI_TYPE WIN32 resources/lbx-tool_msvc.rc)
+        elseif(MINGW)
+            set(GUI_TYPE WIN32 resources/lbx-tool_mingw.rc)
+            set(CMAKE_RC_COMPILER_INIT windres)
+            enable_language(RC)
+            set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff <DEFINES> <INCLUDES> <SOURCE> <OBJECT>")
         endif()
 
         # set gui source files and link targets

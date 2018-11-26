@@ -242,7 +242,17 @@ int cli(int argc, char** argv) {
     return 0;
 }
 
+#ifdef WIN32
+#include <windows.h>
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
+    int argc = __argc;
+    char** argv = __argv;
+#else
+
 int main(int argc, char** argv) {
+#endif
+
 #ifdef WITH_QT
 
     if (argc == 1) {
@@ -259,11 +269,3 @@ int main(int argc, char** argv) {
 
     return cli(argc, argv);
 }
-
-#ifdef WIN32
-#include <windows.h>
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow) {
-    return main(__argc, __argv);
-}
-#endif /* WIN32 */
