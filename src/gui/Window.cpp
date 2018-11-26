@@ -190,7 +190,7 @@ void Window::exec(Command* _cmd) {
 void Window::onDo() {
     actUndo.setEnabled(cmdCurrent > 0);
     actRedo.setEnabled(cmdCurrent < cmd.size());
-    actSave.setEnabled(cmdCurrent != cmdSaved);
+    actSave.setEnabled(cmdCurrent != cmdSaved && model.lbx->path().size() > 0);
     actExtractAll.setEnabled(model.lbx->size() > 0);
 
     if (cmdCurrent == 0) {
