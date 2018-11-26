@@ -113,6 +113,11 @@ Window::Window() : model(this) {
     actUnknown1Save.setText("Save...");
     connect(&actUnknown1Save, &QAction::triggered, this, &Window::onUnknown1Save);
 
+    actViewOffsets.setText("View Offsets");
+    actViewOffsets.setCheckable(true);
+    actViewOffsets.setChecked(model.getIsViewOffsets());
+    connect(&actViewOffsets, &QAction::triggered, this, &Window::onViewOffsets);
+
     // create menues
     QMenu* menuFile = menuBar()->addMenu("&File");
     menuFile->addAction(&actNew);
@@ -138,6 +143,8 @@ Window::Window() : model(this) {
     menuEdit->addAction(&actInsert);
 
     QMenu* menuExtra = menuBar()->addMenu("E&xtra");
+    menuExtra->addAction(&actViewOffsets);
+    menuExtra->addSeparator();
     menuExtra->addAction(&actUnknown0);
 
     QMenu* menuExtraUnknown1 = menuExtra->addMenu("Unknown&1");
@@ -457,4 +464,8 @@ void Window::onUnknown1Save() {
     if (path.size() > 0) {
         save(path, &model.lbx->unknown1());
     }
+}
+
+void Window::onViewOffsets() {
+    model.setIsViewOffsets(actViewOffsets.isChecked());
 }

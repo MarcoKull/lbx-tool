@@ -3,78 +3,110 @@
 
 #include "Model.h"
 
-LbxToolGui::Model::Model(QObject* _parent) : QAbstractTableModel(_parent) {
+using namespace LbxToolGui;
+
+Model::Model(QObject* _parent) : QAbstractTableModel(_parent) {
     lbx = new LbxFile();
+    isViewOffsets = false;
 }
 
-LbxToolGui::Model::~Model() {
+Model::~Model() {
     delete lbx;
 }
 
-int LbxToolGui::Model::rowCount(const QModelIndex& /*_parent*/) const {
+int Model::rowCount(const QModelIndex& /*_parent*/) const {
     return lbx->size();
 }
 
-int LbxToolGui::Model::columnCount(const QModelIndex& /*_parent*/) const {
+int Model::columnCount(const QModelIndex& /*_parent*/) const {
+    if (isViewOffsets) {
+        return 3;
+    }
     return 2;
 }
 
-QVariant LbxToolGui::Model::headerData(int _section, Qt::Orientation _orientation, int _role) const {
+QVariant Model::headerData(int _section, Qt::Orientation _orientation, int _role) const {
     if (_role != Qt::DisplayRole) {
         return QVariant();
     }
 
     if (_orientation == Qt::Horizontal) {
-        switch (_section) {
-            case 0:
-                return tr("Information");
-            case 1:
-                return tr("Size");
-            default:
-                return QVariant();
+        if (isViewOffsets) {
+            switch (_section) {
+                case 0:
+                    return tr("Information");
+                case 1:
+                    return tr("Offset");
+                case 2:
+                    return tr("Size");
+                default:
+                    return QVariant();
+            }
+        } else {
+            switch (_section) {
+                case 0:
+                    return tr("Information");
+                case 1:
+                    return tr("Size");
+                default:
+                    return QVariant();
+            }
         }
     }
     return _section + 1;
 }
 
-Qt::ItemFlags LbxToolGui::Model::flags(const QModelIndex& index) const {
+Qt::ItemFlags Model::flags(const QModelIndex& index) const {
     return QAbstractTableModel::flags(index) | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
-QVariant LbxToolGui::Model::data(const QModelIndex& _index, int _role) const {
+QVariant Model::data(const QModelIndex& _index, int _role) const {
     if (_role != Qt::DisplayRole) {
         return QVariant();
     }
 
-    switch (_index.column()) {
-        case 0:
-            return QString::fromStdString(desc.at((size_t)_index.row()));
-        case 1:
-            return QString::number(lbx->at((uint16_t) _index.row()).second);
-        default:
-            return QVariant();
+    if (isViewOffsets) {
+        switch (_index.column()) {
+            case 0:
+                return QString::fromStdString(desc.at((size_t) _index.row()));
+            case 1:
+                return QString::number(lbx->offset((uint16_t) _index.row()));
+            case 2:
+                return QString::number(lbx->at((uint16_t) _index.row()).second);
+            default:
+                return QVariant();
+        }
+    } else {
+        switch (_index.column()) {
+            case 0:
+                return QString::fromStdString(desc.at((size_t) _index.row()));
+            case 1:
+                return QString::number(lbx->at((uint16_t) _index.row()).second);
+            default:
+                return QVariant();
+        }
     }
 }
 
-void LbxToolGui::Model::remove(uint16_t _index) {
+void Model::remove(uint16_t _index) {
     beginRemoveRows(QModelIndex(), _index, _index);
     lbx->remove(_index);
     desc.erase(desc.begin() + _index);
     endRemoveRows();
 }
 
-void LbxToolGui::Model::insert(uint16_t _index, char* _data, uint32_t _size, std::string _desc) {
+void Model::insert(uint16_t _index, char* _data, uint32_t _size, std::string _desc) {
     beginInsertRows(QModelIndex(), _index, _index);
-    lbx->insert(_index, {_data, _size});
+    lbx->insert(_index,{_data, _size});
     desc.insert(desc.begin() + _index, _desc);
     endInsertRows();
 }
 
-void LbxToolGui::Model::error(std::string _msg) {
+void Model::error(std::string _msg) {
     QMessageBox::critical(NULL, "error", QString::fromStdString("<b>Error:</b><br><br>" + _msg + "."));
 }
 
-bool LbxToolGui::Model::open(std::string _path) {
+bool Model::open(std::string _path) {
     beginResetModel();
     bool ret = true;
     try {
@@ -92,7 +124,7 @@ bool LbxToolGui::Model::open(std::string _path) {
     return ret;
 }
 
-bool LbxToolGui::Model::save() {
+bool Model::save() {
     try {
         lbx->save();
         return true;
@@ -102,7 +134,7 @@ bool LbxToolGui::Model::save() {
     }
 }
 
-bool LbxToolGui::Model::save(std::string _path) {
+bool Model::save(std::string _path) {
     try {
         lbx->save(_path);
         return true;
@@ -110,4 +142,14 @@ bool LbxToolGui::Model::save(std::string _path) {
         error(e.what());
         return false;
     }
+}
+
+bool Model::getIsViewOffsets() {
+    return isViewOffsets;
+}
+
+void Model::setIsViewOffsets(bool _isViewOffsets) {
+    beginResetModel();
+    isViewOffsets = _isViewOffsets;
+    endResetModel();
 }

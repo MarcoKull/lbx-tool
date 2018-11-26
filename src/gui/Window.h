@@ -52,6 +52,7 @@ namespace LbxToolGui {
         QAction actUnknown0;
         QAction actUnknown1Open;
         QAction actUnknown1Save;
+        QAction actViewOffsets;
 
         QLabel statusPath;
         QLabel statusFiles;
@@ -87,6 +88,7 @@ namespace LbxToolGui {
         void onUnknown0();
         void onUnknown1Open();
         void onUnknown1Save();
+        void onViewOffsets();
     };
 }
 

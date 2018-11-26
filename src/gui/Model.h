@@ -16,6 +16,8 @@ namespace LbxToolGui {
         bool open(std::string path);
         bool save();
         bool save(std::string path);
+        void setIsViewOffsets(bool isViewOffsets);
+        bool getIsViewOffsets();
         void remove(uint16_t index);
         void insert(uint16_t index, char* data, uint32_t size, std::string desc);
 
@@ -29,6 +31,9 @@ namespace LbxToolGui {
         std::vector<std::string> desc;
 
         static void error(std::string msg);
+        
+    private:
+        bool isViewOffsets;
 
     };
 
