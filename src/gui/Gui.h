@@ -9,8 +9,10 @@ namespace LbxToolGui {
 
     static int show(int argc, char** argv) {
         // initialize qt application
-        int ac = 0;
-        QApplication app(ac, NULL);
+        char arg0[] = "";
+        char* av[] = {&arg0[0], NULL};
+        int ac = 1;
+        QApplication app(ac, av);
 
         // create main window
         Window win;
