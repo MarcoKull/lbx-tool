@@ -92,7 +92,7 @@ void add() {
 void create() {
     checkArg(3);
     LbxFile lbx;
-    lbx.save();
+    lbx.save(args[2]);
 }
 
 void del() {
