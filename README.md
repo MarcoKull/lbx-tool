@@ -1,6 +1,8 @@
 # lbx-tool
 A small tool to unpack and edit lbx files.
 
+![screenshot](./resources/screenshot.png)
+
 ## Building
 You have to build [liblbx](https://github.com/MarcoKull/liblbx) before you can compile the tool. 
 
