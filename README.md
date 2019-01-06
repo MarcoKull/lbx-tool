@@ -22,7 +22,7 @@ cd build
 
 3. Run cmake to configure the build tree.
 ```bash
-cmake -G "Unix Makefiles" ..
+cmake -G "Unix Makefiles" -DWITH_QT=true ..
 ```
 
 4. Compile the project.
